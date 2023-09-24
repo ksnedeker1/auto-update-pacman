@@ -1,0 +1,7 @@
+# Call auto updater on first terminal instance since reboot
+FLAG_FILE="/tmp/ran_auto_updater"
+
+if [[ ! -e $FLAG_FILE ]]; then
+    auto-update-pacman
+    touch $FLAG_FILE
+fi

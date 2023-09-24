@@ -1,0 +1,17 @@
+#!/bin/bash
+
+NEWS_URL="https://archlinux.org/news/"
+
+NEWS_DATE=$(curl -s "$NEWS_URL" | grep -oP '<td>\K[^<]+' | head -1)
+NEWS_TSTAMP=$(date --date="$NEWS_DATE" +%s)
+
+LAST_UPDATE=$(grep "pacman -Syu" /var/log/pacman.log | tail -1 | cut -c2-11)
+LAST_UPDATE_TSTAMP=$(date --date="$LAST_UPDATE" +%s)
+
+if [[ "$NEWS_TSTAMP" -gt "$LAST_UPDATE_TSTAMP" ]]; then
+    echo "There's a new post on the Arch news page. Read it and update manually."
+    exit
+fi
+
+echo "No new Arch news posts, updating..."
+sudo pacman -Syu
